@@ -15,8 +15,8 @@ import com.vadim.aglocator.textparser.CitiesTextParserImpl;
 public class CitiesManagerImpl implements CitiesManager {
 
     private CitiesTextParser citiesParser = new CitiesTextParserImpl();
-    private Map<String, CityLocation> canadianCities = citiesParser.parseCountryTextFile("src/main/resources/static/CA.txt");
-    private Map<String, CityLocation> americanCities = citiesParser.parseCountryTextFile("src/main/resources/static/US.txt");
+    private Map<String, CityLocation> canadianCities = citiesParser.parseCountryTextFile("src/main/resources/static/CA.zip");
+    private Map<String, CityLocation> americanCities = citiesParser.parseCountryTextFile("src/main/resources/static/US.zip");
 
     private Map<String, CityLocation> getCitiesThatStartWith(String query) {
         Map<String, CityLocation> citiesThatStartWith = new HashMap<>();

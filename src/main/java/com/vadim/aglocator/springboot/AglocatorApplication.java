@@ -1,7 +1,5 @@
 package com.vadim.aglocator.springboot;
 
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.boot.CommandLineRunner;
@@ -26,8 +24,8 @@ public class AglocatorApplication {
 		return args -> {
 			System.out.println("Hello spring boot beans");
 			CitiesTextParser citiesParser = new CitiesTextParserImpl();
-			Map<String, CityLocation> canadianCities = citiesParser.parseCountryTextFile("src/main/resources/static/CA.txt");
-			Map<String, CityLocation> americanCities = citiesParser.parseCountryTextFile("src/main/resources/static/US.txt");
+			Map<String, CityLocation> canadianCities = citiesParser.parseCountryTextFile("src/main/resources/static/CA.zip");
+			Map<String, CityLocation> americanCities = citiesParser.parseCountryTextFile("src/main/resources/static/US.zip");
 		};
 	}
 }

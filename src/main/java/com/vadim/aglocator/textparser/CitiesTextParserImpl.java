@@ -1,18 +1,18 @@
 package com.vadim.aglocator.textparser;
 
-import static java.util.stream.Collectors.toMap;
-
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import com.vadim.aglocator.entities.CityLocation;
 import com.vadim.aglocator.entities.Latitude;
@@ -20,28 +20,27 @@ import com.vadim.aglocator.entities.Longitude;
 
 public class CitiesTextParserImpl implements CitiesTextParser {
 
-    private ArrayList<String> extractRawLocations(String textFilePath) {
-        FileInputStream stream = null;
-        try {
-            stream = new FileInputStream(textFilePath);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-        String strLine;
+    private ArrayList<String> extractRawLocations(String textFilePath) throws IOException {
+        ZipFile zipFile = new ZipFile(textFilePath);
+        Enumeration<? extends ZipEntry> entries = zipFile.entries();
         ArrayList<String> lines = new ArrayList<String>();
-        try {
-            while ((strLine = reader.readLine()) != null) {
+
+        while(entries.hasMoreElements()){
+            ZipEntry entry = entries.nextElement();
+            InputStream stream = zipFile.getInputStream(entry);
+            InputStreamReader reader = new InputStreamReader(stream, "UTF-8");
+            Scanner inputStream = new Scanner(reader);
+            inputStream.nextLine();
+
+            while (inputStream.hasNext()) {
+                String strLine = inputStream.nextLine();
                 lines.add(strLine);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+
+            inputStream.close();
+            stream.close();
         }
-        try {
-            reader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        zipFile.close();
         return lines;
     }
 
@@ -80,7 +79,12 @@ public class CitiesTextParserImpl implements CitiesTextParser {
 
     @Override
     public Map<String, CityLocation> parseCountryTextFile(String textFilePath) {
-        ArrayList<String> rawLocations = extractRawLocations(textFilePath);
+        ArrayList<String> rawLocations = null;
+        try {
+            rawLocations = extractRawLocations(textFilePath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         ArrayList<String> rawCities = new ArrayList<>(filterRawLocations(rawLocations));
         Map<String, CityLocation> parsedCities = new HashMap<>();
         rawCities.forEach(rawCity -> parsedCities.put(getCityNameFromRawCity(rawCity), getCityLocationFromRawCity(rawCity)));

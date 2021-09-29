@@ -1,6 +1,5 @@
 package com.vadim.aglocator.springboot;
 
-import java.util.ArrayList;
 import java.util.Map;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,7 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.vadim.aglocator.citiesManager.CitiesManager;
 import com.vadim.aglocator.citiesManager.CitiesManagerImpl;
 import com.vadim.aglocator.entities.CityLocation;
-import com.vadim.aglocator.entities.SearchResult;
 
 @RestController
 public class LocatorController {
