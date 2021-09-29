@@ -3,6 +3,8 @@ package com.vadim.aglocator.textparser;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -21,33 +23,35 @@ import com.vadim.aglocator.entities.Longitude;
 public class CitiesTextParserImpl implements CitiesTextParser {
 
     private ArrayList<String> extractRawLocations(String textFilePath) throws IOException {
-        ZipFile zipFile = new ZipFile(textFilePath);
-        Enumeration<? extends ZipEntry> entries = zipFile.entries();
-        ArrayList<String> lines = new ArrayList<String>();
+        try {
+            ZipFile zipFile = new ZipFile(textFilePath);
+            Enumeration<? extends ZipEntry> entries = zipFile.entries();
+            ArrayList<String> lines = new ArrayList<>();
 
-        while(entries.hasMoreElements()){
-            ZipEntry entry = entries.nextElement();
-            InputStream stream = zipFile.getInputStream(entry);
-            InputStreamReader reader = new InputStreamReader(stream, "UTF-8");
-            Scanner inputStream = new Scanner(reader);
-            inputStream.nextLine();
+            while (entries.hasMoreElements()) {
+                ZipEntry entry = entries.nextElement();
+                InputStream stream = zipFile.getInputStream(entry);
+                InputStreamReader reader = new InputStreamReader(stream, StandardCharsets.UTF_8);
+                Scanner inputStream = new Scanner(reader);
 
-            while (inputStream.hasNext()) {
-                String strLine = inputStream.nextLine();
-                lines.add(strLine);
+                while (inputStream.hasNext()) {
+                    String strLine = inputStream.nextLine();
+                    lines.add(strLine);
+                }
+
+                inputStream.close();
+                stream.close();
             }
-
-            inputStream.close();
-            stream.close();
+            zipFile.close();
+            return lines;
+        } catch (NoSuchFileException e) {
+            throw new NoSuchFileException(textFilePath);
         }
-        zipFile.close();
-        return lines;
     }
 
     private boolean isRawLocationACity(String rawLocation) {
         String[] locationComponents = rawLocation.split("\\t+");
-        boolean isCity = Arrays.asList(locationComponents)
-                .stream()
+        boolean isCity = Arrays.stream(locationComponents)
                 .anyMatch(s -> s.matches("^P$"));
         return isCity;
     }
@@ -74,7 +78,7 @@ public class CitiesTextParserImpl implements CitiesTextParser {
                 .filter(s -> s.matches(latLonRegex))
                 .collect(Collectors.toList());
 
-        return CityLocation.of(Latitude.of(Double.parseDouble(latLongList.get(0))), Longitude.of(Double.parseDouble(latLongList.get(1))));
+        return CityLocation.of(Latitude.of(latLongList.get(0)), Longitude.of(latLongList.get(1)));
     }
 
     @Override
@@ -82,8 +86,13 @@ public class CitiesTextParserImpl implements CitiesTextParser {
         ArrayList<String> rawLocations = null;
         try {
             rawLocations = extractRawLocations(textFilePath);
+        } catch (NoSuchFileException e) {
+            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+        if (rawLocations == null) {
+            return new HashMap<>();
         }
         ArrayList<String> rawCities = new ArrayList<>(filterRawLocations(rawLocations));
         Map<String, CityLocation> parsedCities = new HashMap<>();
