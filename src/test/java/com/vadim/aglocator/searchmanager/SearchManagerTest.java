@@ -16,15 +16,15 @@ class SearchManagerTest {
         searchManager = new SearchManagerImpl();
     }
 
-    @Test
-    void getUnsortedUnscoredResults() {
-    }
-
-    @Test
-    void scoreUnsortedUnscoredResults() {
-    }
-
-    @Test
-    void sortUnsortedScoredResults() {
-    }
+//    @Test
+//    void getUnsortedUnscoredResults() {
+//    }
+//
+//    @Test
+//    void scoreUnsortedUnscoredResults() {
+//    }
+//
+//    @Test
+//    void sortUnsortedScoredResults() {
+//    }
 }

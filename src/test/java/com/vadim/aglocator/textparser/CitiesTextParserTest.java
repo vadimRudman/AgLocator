@@ -48,13 +48,4 @@ class CitiesTextParserTest {
         assertEquals(testCities.get(expectedCityTwo).getLongitude().getLongitude(), expectedLongitudeTwo);
     }
 
-//    @Test
-//    public void test_fail_IncorrectZipFilePath() {
-//        InvalidPathException thrown = assertThrows(
-//                InvalidPathException.class,
-//                () -> citiesTextParser.parseCountryTextFile("incorrect/path/TestCountry.zip"));
-//
-//        assertTrue(thrown.getMessage().contains("incorrect/path/TestCountry.zip"));
-//    }
-
 }

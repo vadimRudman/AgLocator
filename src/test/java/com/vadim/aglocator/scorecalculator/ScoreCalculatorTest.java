@@ -16,15 +16,15 @@ class ScoreCalculatorTest {
         scoreCalculator = new ScoreCalculatorImpl();
     }
 
-    @Test
-    void calculateCityNameScore() {
-    }
-
-    @Test
-    void calculateLocationScore() {
-    }
-
-    @Test
-    void calculateSearchScore() {
-    }
+//    @Test
+//    void calculateCityNameScore() {
+//    }
+//
+//    @Test
+//    void calculateLocationScore() {
+//    }
+//
+//    @Test
+//    void calculateSearchScore() {
+//    }
 }
